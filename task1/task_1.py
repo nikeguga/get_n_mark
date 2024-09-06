@@ -1,9 +1,9 @@
 import requests
 
-# Введите сюда ваш Foursquare API-ключ
-API_KEY = 'ВАШ_API_КЛЮЧ_FOURSQUARE'
 
-# URL для Foursquare Places API
+API_KEY = 'fsq3dxJfGy4s8Pn5Kmk5An7MjbTuYbGqOiYgQGFDh5GLs60='
+
+
 API_URL = "https://api.foursquare.com/v3/places/search"
 
 # Функция для получения данных о заведениях по заданным параметрам
@@ -13,7 +13,7 @@ def search_places(query, city, min_rating, limit=10):
         "Authorization": API_KEY
     }
     
-    # Параметры для запроса
+    
     params = {
         "query": query,
         "near": city,
@@ -54,19 +54,15 @@ def display_places(places):
 if __name__ == "__main__":
     print("Вэлкам в Foursquare!")
     
-    # Ввод категории (тип заведения)
-    query = input("Введите категорию интересующего заведения (например, кафе, парки, музеи): ").strip()
     
-    # Ввод города
+    query = input("Введите категорию интересующего заведения (например, кафе, парки, музеи): ").strip()
+   
     city = input("Введите город для поиска: ").strip()
     
-    # Ввод минимального рейтинга
     min_rating = float(input("Введите минимальный рейтинг заведения (от 0 до 10): ").strip())
     
-    # Ввод ограничения количества заведений (например, 10)
     limit = int(input("Сколько заведений показать? (например, 10): ").strip())
-    
-    # Поиск заведений с заданными параметрами
+
     places = search_places(query, city, min_rating, limit)
     
     # Вывод заведений

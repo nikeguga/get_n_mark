@@ -6,7 +6,7 @@ import scrapy
 class UnsplashImagePipeline(ImagesPipeline):
     
     def open_spider(self, spider):
-        # Открываем CSV файл для записи в указанную директорию
+        # Открываем CSV файл для записи
         csv_file_path = r'C:\Users\User\Desktop\Get_n_mark_data\task6\output.csv'
         self.csv_file = open(csv_file_path, 'w', newline='', encoding='utf-8')
         self.csv_writer = csv.writer(self.csv_file)
@@ -24,13 +24,15 @@ class UnsplashImagePipeline(ImagesPipeline):
     def file_path(self, request, response=None, info=None, *, item=None):
         item = request.meta['item']
         # Полное имя файла с сохранённым изображением
-        return f"{item['title']}.jpg"
+        local_path = f"{item['title']}.jpg"
+        # Возвращаем локальный путь
+        return local_path
 
     def item_completed(self, results, item, info):
-        # Записываем данные в CSV после загрузки изображения
+        # Проверяем, успешно ли загружено изображение
         if results and results[0][0]:
-            # Локальный путь к изображению
-            local_path = results[0][1]['path']
-            # Записываем строку в CSV
+            # Локальный путь к файлу изображения
+            local_path = os.path.join(self.store.basedir, results[0][1]['path'])
+            # Записываем URL, локальный путь и название в CSV
             self.csv_writer.writerow([item['url'], local_path, item['title']])
         return item

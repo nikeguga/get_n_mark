@@ -11,3 +11,10 @@ ITEM_PIPELINES = {
 IMAGES_STORE = r'C:\Users\User\Desktop\Get_n_mark_data\task6\images'
 
 DOWNLOAD_DELAY = 1
+
+FEEDS = {
+    'output.csv': {
+        'format': 'csv',
+        'fields': ['url', 'local_path', 'title'],
+    },
+}

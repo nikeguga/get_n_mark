@@ -1,20 +1,21 @@
 from scrapy.pipelines.images import ImagesPipeline
-import scrapy
-import os
 import csv
+import os
+import scrapy
 
 class UnsplashImagePipeline(ImagesPipeline):
     
     def open_spider(self, spider):
-        # Открываем CSV файл для записи данных
-        self.file = open('output.csv', 'w', newline='', encoding='utf-8')
-        self.writer = csv.writer(self.file)
+        # Открываем CSV файл для записи в указанную директорию
+        csv_file_path = r'C:\Users\User\Desktop\Get_n_mark_data\task6\output.csv'
+        self.csv_file = open(csv_file_path, 'w', newline='', encoding='utf-8')
+        self.csv_writer = csv.writer(self.csv_file)
         # Записываем заголовки
-        self.writer.writerow(['title', 'categories', 'url', 'local_path'])
+        self.csv_writer.writerow(['URL', 'Local Path', 'Title'])
 
     def close_spider(self, spider):
-        # Закрываем CSV файл при завершении работы паука
-        self.file.close()
+        # Закрываем CSV файл
+        self.csv_file.close()
 
     def get_media_requests(self, item, info):
         for image_url in item['image_urls']:
@@ -22,21 +23,14 @@ class UnsplashImagePipeline(ImagesPipeline):
 
     def file_path(self, request, response=None, info=None, *, item=None):
         item = request.meta['item']
-        # Сохраняем изображение в подкаталоге с названием категории
-        return f"{item['categories'][0] if item['categories'] else 'uncategorized'}/{item['title']}.jpg"
+        # Полное имя файла с сохранённым изображением
+        return f"{item['title']}.jpg"
 
     def item_completed(self, results, item, info):
-        # Проверяем, были ли успешно загружены изображения
+        # Записываем данные в CSV после загрузки изображения
         if results and results[0][0]:
-            # Получаем путь к локально сохраненному изображению
+            # Локальный путь к изображению
             local_path = results[0][1]['path']
-
-            # Записываем строку в CSV с необходимыми данными
-            self.writer.writerow([
-                item.get('title'),
-                ', '.join(item.get('categories', [])),  # Преобразуем список категорий в строку
-                item.get('url'),
-                local_path
-            ])
-
+            # Записываем строку в CSV
+            self.csv_writer.writerow([item['url'], local_path, item['title']])
         return item
